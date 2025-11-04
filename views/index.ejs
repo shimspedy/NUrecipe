@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+
+<div class="hero-section bg-primary text-white py-5 mb-5 rounded">
+    <div class="container text-center">
+        <h1 class="display-4">Welcome to Recipe App</h1>
+        <p class="lead">Discover, share, and enjoy delicious recipes from around the world</p>
+        <a href="/recipes" class="btn btn-light btn-lg">Browse All Recipes</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Featured Recipes</h2>
+    </div>
+</div>
+
+<div class="row">
+    <% recipes.forEach(recipe => { %>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><%= recipe.title %></h5>
+                <p class="card-text"><%= recipe.description %></p>
+                <div class="recipe-meta mb-3">
+                    <small class="text-muted">
+                        <i class="bi bi-clock"></i> <%= recipe.cookTime %> | 
+                        <i class="bi bi-people"></i> <%= recipe.servings %> servings | 
+                        <span class="badge bg-secondary"><%= recipe.difficulty %></span>
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="/recipes/<%= recipe.id %>" class="btn btn-primary">View Recipe</a>
+            </div>
+        </div>
+    </div>
+    <% }) %>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Share Your Recipe</h5>
+                <p class="card-text">Have a delicious recipe to share? Add it to our collection!</p>
+                <a href="/add-recipe" class="btn btn-success">Add Recipe</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5 class="card-title">Browse Categories</h5>
+                <p class="card-text">Explore recipes by cuisine, meal type, or dietary preferences.</p>
+                <a href="/recipes" class="btn btn-outline-primary">View All</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
