@@ -1,126 +1,40 @@
 <%- include('partials/header') %>
 
-<div class="row">
-    <div class="col-12">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/recipes">Recipes</a></li>
-                <li class="breadcrumb-item active"><%= recipe.title %></li>
-            </ol>
-        </nav>
+<div class="container mt-5 mb-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-5"><%= recipe.title %></h1>
+        <span class="badge bg-primary fs-6"><%= recipe.category %></span>
+      </div>
+
+      <div class="text-muted mb-4">
+        <i class="bi bi-clock"></i> <%= recipe.cookTime %> |
+        <i class="bi bi-people"></i> Serves <%= recipe.servings %> |
+        <span class="badge bg-secondary"><%= recipe.difficulty %></span>
+      </div>
+
+      <hr>
+
+      <p class="lead"><%= recipe.description %></p>
+
+      <h4 class="mt-4">Ingredients</h4>
+      <ul class="list-group list-group-flush mb-4">
+        <% (recipe.ingredients || []).forEach(item => { %>
+          <li class="list-group-item"><%= item %></li>
+        <% }) %>
+      </ul>
+
+      <h4>Instructions</h4>
+      <p style="white-space: pre-line"><%= recipe.instructions %></p>
+
+      <div class="mt-4">
+        <a href="/recipes" class="btn btn-outline-primary">
+          <i class="bi bi-arrow-left"></i> Back to Recipes
+        </a>
+      </div>
     </div>
+  </div>
 </div>
-
-<div class="row">
-    <div class="col-md-8">
-        <h1><%= recipe.title %></h1>
-        <p class="lead"><%= recipe.description %></p>
-        
-        <div class="recipe-meta mb-4">
-            <div class="row">
-                <div class="col-sm-3">
-                    <strong>Cook Time:</strong><br>
-                    <span class="text-muted"><%= recipe.cookTime %></span>
-                </div>
-                <div class="col-sm-3">
-                    <strong>Servings:</strong><br>
-                    <span class="text-muted"><%= recipe.servings %></span>
-                </div>
-                <div class="col-sm-3">
-                    <strong>Difficulty:</strong><br>
-                    <span class="badge bg-secondary"><%= recipe.difficulty %></span>
-                </div>
-                <div class="col-sm-3">
-                    <strong>Category:</strong><br>
-                    <span class="badge bg-primary"><%= recipe.category %></span>
-                </div>
-            </div>
-        </div>
-
-        <hr>
-
-        <h3>Instructions</h3>
-        <div class="instructions">
-            <p class="lead"><%= recipe.instructions %></p>
-        </div>
-
-        <div class="mt-4">
-            <a href="/recipes" class="btn btn-outline-primary">← Back to Recipes</a>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Ingredients</h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled ingredients-list">
-                    <% recipe.ingredients.forEach(ingredient => { %>
-                    <li class="mb-2">
-                        <input type="checkbox" class="form-check-input me-2" id="ingredient-<%= recipe.ingredients.indexOf(ingredient) %>">
-                        <label for="ingredient-<%= recipe.ingredients.indexOf(ingredient) %>" class="ingredient-item">
-                            <%= ingredient %>
-                        </label>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-body">
-                <h6 class="card-title">Recipe Actions</h6>
-                <button class="btn btn-outline-success btn-sm mb-2" onclick="printRecipe()">
-                    📄 Print Recipe
-                </button>
-                <br>
-                <button class="btn btn-outline-info btn-sm" onclick="shareRecipe()">
-                    📤 Share Recipe
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-.ingredient-item {
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.ingredients-list input[type="checkbox"]:checked + .ingredient-item {
-    text-decoration: line-through;
-    color: #6c757d;
-}
-
-@media print {
-    .navbar, .btn, .card:last-child {
-        display: none !important;
-    }
-}
-</style>
-
-<script>
-function printRecipe() {
-    window.print();
-}
-
-function shareRecipe() {
-    if (navigator.share) {
-        navigator.share({
-            title: '<%= recipe.title %>',
-            text: '<%= recipe.description %>',
-            url: window.location.href
-        });
-    } else {
-        // Fallback for browsers that don't support Web Share API
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            alert('Recipe link copied to clipboard!');
-        });
-    }
-}
-</script>
 
 <%- include('partials/footer') %>

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
@@ -16,31 +17,16 @@ app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Sample recipe data (in a real app, this would come from a database)
-let recipes = [
-  {
-    id: 1,
-    title: "Spaghetti Carbonara",
-    description: "Classic Italian pasta dish with eggs, cheese, and pancetta",
-    ingredients: ["400g spaghetti", "200g pancetta", "4 large eggs", "100g Parmesan cheese", "Black pepper", "Salt"],
-    instructions: "1. Cook pasta according to package directions. 2. Fry pancetta until crispy. 3. Mix eggs and cheese. 4. Combine all ingredients while pasta is hot.",
-    cookTime: "20 minutes",
-    servings: 4,
-    difficulty: "Medium",
-    category: "Italian"
-  },
-  {
-    id: 2,
-    title: "Chocolate Chip Cookies",
-    description: "Soft and chewy homemade chocolate chip cookies",
-    ingredients: ["2¼ cups flour", "1 tsp baking soda", "1 tsp salt", "1 cup butter", "¾ cup brown sugar", "¾ cup white sugar", "2 eggs", "2 cups chocolate chips"],
-    instructions: "1. Preheat oven to 375°F. 2. Mix dry ingredients. 3. Cream butter and sugars. 4. Add eggs and vanilla. 5. Combine wet and dry ingredients. 6. Fold in chocolate chips. 7. Bake for 9-11 minutes.",
-    cookTime: "25 minutes",
-    servings: 36,
-    difficulty: "Easy",
-    category: "Dessert"
-  }
-];
+// Load recipes from JSON file
+const dataPath = path.join(__dirname, 'data', 'recipes.json');
+let recipes = [];
+
+try {
+  const fileData = fs.readFileSync(dataPath, 'utf8');
+  recipes = JSON.parse(fileData);
+} catch (err) {
+  console.error('Error reading recipes.json:', err);
+}
 
 // Routes
 
@@ -95,8 +81,16 @@ app.post('/recipes', (req, res) => {
     difficulty: req.body.difficulty,
     category: req.body.category
   };
-  
+
   recipes.push(newRecipe);
+
+  // Save to JSON file
+  try {
+    fs.writeFileSync(dataPath, JSON.stringify(recipes, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Error saving to recipes.json:', err);
+  }
+
   res.redirect('/recipes');
 });
 
