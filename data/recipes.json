@@ -5,7 +5,7 @@
     "description": "Classic Italian pasta dish with eggs, cheese, and pancetta",
     "category": "Italian",
     "difficulty": "Medium",
-    "time": 20,
+    "cookTime": 20,
     "servings": 4
   },
   {
@@ -14,7 +14,7 @@
     "description": "Soft and chewy homemade chocolate chip cookies",
     "category": "Dessert",
     "difficulty": "Easy",
-    "time": 25,
+    "cookTime": 25,
     "servings": 36
   },
   {
@@ -23,7 +23,7 @@
     "description": "Healthy grilled chicken salad with mixed greens and vinaigrette",
     "category": "Main Course",
     "difficulty": "Easy",
-    "time": 30,
+    "cookTime": 30,
     "servings": 2
   }
 ]
