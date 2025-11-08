@@ -1,0 +1,29 @@
+{
+  // Disable caching for better development experience
+  "liveServer.settings.ignoreFiles": [],
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  
+  // Auto-save files to see changes immediately
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  
+  // Refresh browser automatically when files change
+  "editor.formatOnSave": true,
+  
+  // Clear terminal on restart
+  "terminal.integrated.enablePersistentSessions": false,
+  
+  // Node.js specific settings
+  "nodejs.autoRefresh": true,
+  
+  // EJS syntax highlighting
+  "emmet.includeLanguages": {
+    "ejs": "html"
+  },
+  
+  // Files to watch for changes
+  "files.watcherExclude": {
+    "**/node_modules/**": false
+  }
+}

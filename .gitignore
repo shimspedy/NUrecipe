@@ -101,7 +101,7 @@ ehthumbs.db
 Thumbs.db
 
 # Editor directories and files
-.vscode/
+# .vscode/ - Commented out to share settings with team
 .idea/
 *.suo
 *.ntvs*

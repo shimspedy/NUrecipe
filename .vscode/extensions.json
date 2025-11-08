@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ritwickdey.liveserver",
+    "digitalbrainstem.javascript-ejs-support",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "eg2.vscode-npm-script"
+  ]
+}
