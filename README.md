@@ -108,17 +108,24 @@ Modify `public/css/style.css` to customize the appearance. The app uses Bootstra
 ### MySQL Database Integration
 This project supports MySQL for persistent recipe storage.
 
-**To reset and populate your database with sample data:**
+#### Resetting and Populating the Database
 
+The file `reset-recipes.sql` will:
+- Drop the `recipe_app` database if it exists
+- Recreate the database
+- Create the `recipes` table
+- Insert sample recipe data
+
+**Usage:**
 1. Make sure MySQL is installed and running.
-2. Run the following command in your project directory:
+2. In your project directory, run:
    ```sh
    mysql -u root -p < reset-recipes.sql
    ```
    (Replace `root` with your MySQL username if different.)
-3. This will drop and recreate the `recipe_app` database, create the `recipes` table, and insert sample recipes.
+3. This will reset your database and load sample recipes.
 
-**To view your data in MySQL Workbench:**
+#### Viewing Data in MySQL Workbench
 1. Connect to your MySQL server.
 2. Expand the `recipe_app` database and the `recipes` table.
 3. Right-click the table and select "Select Rows - Limit 1000" to view all recipes.
