@@ -104,11 +104,24 @@ Edit the category options in `views/add-recipe.ejs` and update the filter in `vi
 ### Styling
 Modify `public/css/style.css` to customize the appearance. The app uses Bootstrap 5 as the base framework.
 
-### Database Integration
-Currently uses in-memory storage. To add a database:
-1. Install a database driver (e.g., `npm install mongoose` for MongoDB)
-2. Create database models
-3. Update the routes in `server.js` to use database operations
+
+### MySQL Database Integration
+This project supports MySQL for persistent recipe storage.
+
+**To reset and populate your database with sample data:**
+
+1. Make sure MySQL is installed and running.
+2. Run the following command in your project directory:
+   ```sh
+   mysql -u root -p < reset-recipes.sql
+   ```
+   (Replace `root` with your MySQL username if different.)
+3. This will drop and recreate the `recipe_app` database, create the `recipes` table, and insert sample recipes.
+
+**To view your data in MySQL Workbench:**
+1. Connect to your MySQL server.
+2. Expand the `recipe_app` database and the `recipes` table.
+3. Right-click the table and select "Select Rows - Limit 1000" to view all recipes.
 
 ## Scripts
 
