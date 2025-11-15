@@ -1,3 +1,28 @@
+### Testing MySQL Connection
+
+To quickly test your MySQL connection, use the provided script:
+
+```js
+// config/test-db-connection.js
+const pool = require('./db');
+
+pool.getConnection((err, connection) => {
+   if (err) {
+      console.error('MySQL connection failed:', err.message);
+      process.exit(1);
+   } else {
+      console.log('MySQL connection successful!');
+      connection.release();
+      process.exit(0);
+   }
+});
+```
+
+Run it with:
+```sh
+node config/test-db-connection.js
+```
+If you see "MySQL connection successful!", your database credentials are correct and the server is reachable.
 # Recipe App
 
 A full-featured recipe sharing application built with Express.js, EJS templating, and Bootstrap for styling.
