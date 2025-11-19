@@ -1,0 +1,26 @@
+<h1>NoSQL Protein Recipes</h1>
+<p class="text-muted">These recipes come directly from your MongoDB Atlas NoSQL database.</p>
+
+<div class="row">
+    <% data.forEach(item => { %>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4><%= item.title %></h4>
+
+                    <p><strong>Protein:</strong> <%= item.protein %>g</p>
+                    <p><strong>Calories:</strong> <%= item.calories %></p>
+                    <p><strong>Notes:</strong> <%= item.notes %></p>
+
+                    <% if (item.tags && item.tags.length > 0) { %>
+                        <div class="mt-2">
+                            <% item.tags.forEach(tag => { %>
+                                <span class="badge bg-primary me-1"><%= tag %></span>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>

@@ -1,0 +1,134 @@
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1>Add New Recipe</h1>
+        <p class="lead">Share your delicious recipe with the community!</p>
+
+        <form action="/recipes" method="POST" class="needs-validation" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="title" class="form-label">Recipe Title *</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                    <div class="invalid-feedback">
+                        Please provide a recipe title.
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="category" class="form-label">Category *</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="">Choose category...</option>
+                        <option value="Appetizer">Appetizer</option>
+                        <option value="Main Course">Main Course</option>
+                        <option value="Dessert">Dessert</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Asian">Asian</option>
+                        <option value="Mexican">Mexican</option>
+                        <option value="American">American</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        <option value="Vegan">Vegan</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a category.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description *</label>
+                <textarea class="form-control" id="description" name="description" rows="3" 
+                          placeholder="Brief description of your recipe..." required></textarea>
+                <div class="invalid-feedback">
+                    Please provide a recipe description.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="cookTime" class="form-label">Cook Time *</label>
+                    <input type="text" class="form-control" id="cookTime" name="cookTime" 
+                           placeholder="e.g., 30 minutes" required>
+                    <div class="invalid-feedback">
+                        Please provide cook time.
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="servings" class="form-label">Servings *</label>
+                    <input type="number" class="form-control" id="servings" name="servings" 
+                           min="1" max="50" required>
+                    <div class="invalid-feedback">
+                        Please provide number of servings.
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="difficulty" class="form-label">Difficulty *</label>
+                    <select class="form-select" id="difficulty" name="difficulty" required>
+                        <option value="">Choose difficulty...</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select difficulty level.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="ingredients" class="form-label">Ingredients *</label>
+                <textarea class="form-control" id="ingredients" name="ingredients" rows="6" 
+                          placeholder="Enter each ingredient on a new line, e.g.:&#10;2 cups flour&#10;1 tsp salt&#10;3 eggs" required></textarea>
+                <div class="form-text">Enter each ingredient on a separate line</div>
+                <div class="invalid-feedback">
+                    Please provide ingredients list.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="instructions" class="form-label">Instructions *</label>
+                <textarea class="form-control" id="instructions" name="instructions" rows="8" 
+                          placeholder="Provide step-by-step cooking instructions..." required></textarea>
+                <div class="invalid-feedback">
+                    Please provide cooking instructions.
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="/recipes" class="btn btn-secondary me-md-2">Cancel</a>
+                <button type="submit" class="btn btn-success">Add Recipe</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Auto-resize textareas
+document.addEventListener('DOMContentLoaded', function() {
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+});
+</script>
+
+    }, false);
+})();
+</script>

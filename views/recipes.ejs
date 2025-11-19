@@ -1,0 +1,100 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>All Recipes</h1>
+    <a href="/add-recipe" class="btn btn-success">Add New Recipe</a>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" class="form-control" id="searchInput" placeholder="Search recipes...">
+    </div>
+    <div class="col-md-3">
+        <select class="form-select" id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="Italian">Italian</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Appetizer">Appetizer</option>
+            <option value="Main Course">Main Course</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select class="form-select" id="difficultyFilter">
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+    </div>
+</div>
+
+<div class="row" id="recipesContainer">
+    <% if (recipes.length === 0) { %>
+    <div class="col-12">
+        <div class="text-center py-5">
+            <h3>No recipes found</h3>
+            <p class="text-muted">Be the first to add a recipe!</p>
+            <a href="/add-recipe" class="btn btn-primary">Add Recipe</a>
+        </div>
+    </div>
+    <% } else { %>
+        <% recipes.forEach(recipe => { %>
+        <div class="col-md-4 mb-4 recipe-card" data-category="<%= recipe.category %>" data-difficulty="<%= recipe.difficulty %>">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><%= recipe.title %></h5>
+                    <p class="card-text"><%= recipe.description %></p>
+                    <div class="recipe-meta mb-3">
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> <%= recipe.cookTime %> | 
+                            <i class="bi bi-people"></i> <%= recipe.servings %> servings
+                        </small>
+                        <br>
+                        <span class="badge bg-primary mt-1"><%= recipe.category %></span>
+                        <span class="badge bg-secondary mt-1"><%= recipe.difficulty %></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="/recipes/<%= recipe.id %>" class="btn btn-primary">View Recipe</a>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    <% } %>
+</div>
+
+<script>
+// Simple search and filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const difficultyFilter = document.getElementById('difficultyFilter');
+    const recipeCards = document.querySelectorAll('.recipe-card');
+
+    function filterRecipes() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const selectedDifficulty = difficultyFilter.value;
+
+        recipeCards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const description = card.querySelector('.card-text').textContent.toLowerCase();
+            const category = card.getAttribute('data-category');
+            const difficulty = card.getAttribute('data-difficulty');
+
+            const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            const matchesDifficulty = !selectedDifficulty || difficulty === selectedDifficulty;
+
+            if (matchesSearch && matchesCategory && matchesDifficulty) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterRecipes);
+    categoryFilter.addEventListener('change', filterRecipes);
+    difficultyFilter.addEventListener('change', filterRecipes);
+});
+</script>
