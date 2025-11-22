@@ -36,6 +36,62 @@
       <h4>Instructions</h4>
       <p style="white-space: pre-line"><%= recipe.instructions %></p>
 
+      <hr class="my-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="mb-0">Cooking Tips (MongoDB)</h4>
+        <span class="badge bg-info text-dark">Linked to recipe #<%= recipe.id %></span>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <form action="/recipes/<%= recipe.id %>/tips" method="POST" class="row g-3">
+            <div class="col-md-4">
+              <label for="newTipTitle" class="form-label">Title</label>
+              <input type="text" id="newTipTitle" name="title" class="form-control" placeholder="e.g., Sauce tip">
+            </div>
+            <div class="col-md-6">
+              <label for="newTipBody" class="form-label">Tip *</label>
+              <textarea id="newTipBody" name="tip" class="form-control" rows="2" required
+                        placeholder="Add a quick note, substitution, or tip..."></textarea>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="submit" class="btn btn-success w-100">Add Tip</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <% if (!tips || tips.length === 0) { %>
+        <div class="alert alert-secondary">No tips yet. Add one above.</div>
+      <% } else { %>
+        <div class="list-group">
+          <% tips.forEach(tip => { %>
+            <div class="list-group-item">
+              <form action="/recipes/<%= recipe.id %>/tips/<%= tip.id %>?_method=PUT" method="POST" class="mb-2">
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-3">
+                    <input type="text" name="title" class="form-control" value="<%= tip.title %>" placeholder="Title">
+                  </div>
+                  <div class="col-md-7">
+                    <textarea name="tip" class="form-control" rows="2" required><%= tip.tip %></textarea>
+                    <small class="text-muted">
+                      Updated: <%= tip.updatedAt ? new Date(tip.updatedAt).toLocaleString() : 'Just now' %>
+                    </small>
+                  </div>
+                  <div class="col-md-2 d-flex gap-2 justify-content-end">
+                    <button type="submit" class="btn btn-outline-primary btn-sm w-100">Save</button>
+                  </div>
+                </div>
+              </form>
+              <form action="/recipes/<%= recipe.id %>/tips/<%= tip.id %>?_method=DELETE" method="POST"
+                    onsubmit="return confirm('Delete this tip?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
       <div class="mt-4">
         <a href="/recipes" class="btn btn-outline-primary">
           <i class="bi bi-arrow-left"></i> Back to Recipes

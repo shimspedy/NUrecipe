@@ -1,4 +1,6 @@
 const db = require('./config/db');
+const { getMongoDb } = require('./config/mongo');
+const { ObjectId } = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
@@ -45,6 +47,39 @@ function getRecipeById(id, callback) {
   });
 }
 
+// Promise wrapper for easier async/await usage
+function getRecipeByIdAsync(id) {
+  return new Promise((resolve, reject) => {
+    getRecipeById(id, (err, recipe) => {
+      if (err) return reject(err);
+      resolve(recipe);
+    });
+  });
+}
+
+// Fetch Mongo cooking tips that belong to a recipe
+async function getRecipeTips(recipeId) {
+  const mongoDb = await getMongoDb();
+  const tips = await mongoDb
+    .collection('recipeTips')
+    .find({ recipeId })
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  return tips.map(tip => ({
+    ...tip,
+    id: tip._id.toString()
+  }));
+}
+
+function toObjectId(id) {
+  try {
+    return new ObjectId(id);
+  } catch (err) {
+    return null;
+  }
+}
+
 // Normalize textarea input into an ingredients array
 function parseIngredients(ingredientsInput = '') {
   return ingredientsInput
@@ -82,21 +117,24 @@ app.get('/recipes', (req, res) => {
 });
 
 // Single recipe detail page
-app.get('/recipes/:id', (req, res) => {
+app.get('/recipes/:id', async (req, res) => {
   const recipeId = parseInt(req.params.id);
-  getRecipeById(recipeId, (err, recipe) => {
-    if (err) {
-      return res.status(500).send('Database error');
-    }
+  try {
+    const recipe = await getRecipeByIdAsync(recipeId);
     if (!recipe) {
       return res.status(404).render('404', { title: 'Recipe Not Found' });
     }
+    const tips = await getRecipeTips(recipeId);
 
     res.render('recipe-detail', {
       title: recipe.title,
-      recipe
+      recipe,
+      tips
     });
-  });
+  } catch (err) {
+    console.error('Error loading recipe:', err);
+    return res.status(500).send('Database error');
+  }
 });
 
 // Add recipe page - form to create new recipe
@@ -175,19 +213,115 @@ app.put('/recipes/:id', (req, res) => {
   });
 });
 
-// Delete a recipe
-app.delete('/recipes/:id', (req, res) => {
+// Add a MongoDB cooking tip linked to a recipe
+app.post('/recipes/:id/tips', async (req, res) => {
   const recipeId = parseInt(req.params.id);
-  db.query('DELETE FROM recipes WHERE id = ?', [recipeId], (err, result) => {
-    if (err) {
-      console.error('Error deleting recipe:', err);
-      return res.status(500).send('Database error');
+  const title = (req.body.title || '').trim();
+  const tipBody = (req.body.tip || '').trim();
+
+  if (!tipBody) {
+    return res.redirect(`/recipes/${recipeId}`);
+  }
+
+  try {
+    const recipe = await getRecipeByIdAsync(recipeId);
+    if (!recipe) {
+      return res.status(404).render('404', { title: 'Recipe Not Found' });
     }
+
+    const mongoDb = await getMongoDb();
+    await mongoDb.collection('recipeTips').insertOne({
+      recipeId,
+      title: title || 'Cooking Tip',
+      tip: tipBody,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    res.redirect(`/recipes/${recipeId}`);
+  } catch (err) {
+    console.error('Error adding recipe tip:', err);
+    res.status(500).send('NoSQL database error');
+  }
+});
+
+// Update a MongoDB cooking tip
+app.put('/recipes/:id/tips/:tipId', async (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  const tipId = toObjectId(req.params.tipId);
+  const title = (req.body.title || '').trim();
+  const tipBody = (req.body.tip || '').trim();
+
+  if (!tipId) {
+    return res.status(400).send('Invalid tip id');
+  }
+
+  try {
+    const mongoDb = await getMongoDb();
+    const result = await mongoDb.collection('recipeTips').updateOne(
+      { _id: tipId, recipeId },
+      {
+        $set: {
+          title: title || 'Cooking Tip',
+          tip: tipBody,
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    if (!result.matchedCount) {
+      return res.status(404).render('404', { title: 'Recipe Tip Not Found' });
+    }
+
+    res.redirect(`/recipes/${recipeId}`);
+  } catch (err) {
+    console.error('Error updating recipe tip:', err);
+    res.status(500).send('NoSQL database error');
+  }
+});
+
+// Delete a MongoDB cooking tip
+app.delete('/recipes/:id/tips/:tipId', async (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  const tipId = toObjectId(req.params.tipId);
+
+  if (!tipId) {
+    return res.status(400).send('Invalid tip id');
+  }
+
+  try {
+    const mongoDb = await getMongoDb();
+    await mongoDb.collection('recipeTips').deleteOne({ _id: tipId, recipeId });
+    res.redirect(`/recipes/${recipeId}`);
+  } catch (err) {
+    console.error('Error deleting recipe tip:', err);
+    res.status(500).send('NoSQL database error');
+  }
+});
+
+// Delete a recipe (and its Mongo cooking tips)
+app.delete('/recipes/:id', async (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  try {
+    const result = await new Promise((resolve, reject) => {
+      db.query('DELETE FROM recipes WHERE id = ?', [recipeId], (err, mysqlResult) => {
+        if (err) return reject(err);
+        resolve(mysqlResult);
+      });
+    });
+
     if (!result.affectedRows) {
       return res.status(404).render('404', { title: 'Recipe Not Found' });
     }
+
+    const mongoDb = await getMongoDb();
+    await mongoDb.collection('recipeTips').deleteMany({ recipeId });
+
     res.redirect('/recipes');
-  });
+  } catch (err) {
+    console.error('Error deleting recipe:', err);
+    res.status(500).send('Database error');
+  }
 });
 
 // About page - information about the app
@@ -204,6 +338,22 @@ app.get('/api/recipes', (req, res) => {
     }
     res.json(recipes);
   });
+});
+
+// API endpoint to get a single recipe with Mongo cooking tips
+app.get('/api/recipes/:id', async (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  try {
+    const recipe = await getRecipeByIdAsync(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+    const tips = await getRecipeTips(recipeId);
+    res.json({ ...recipe, tips });
+  } catch (err) {
+    console.error('Error loading recipe via API:', err);
+    res.status(500).json({ error: 'Database error', details: err });
+  }
 });
 
 // 404 handler

@@ -33,6 +33,7 @@ A full-featured recipe sharing application built with Express.js, EJS templating
 - **Browse Recipes**: View all recipes with search and filter functionality
 - **Recipe Details**: Detailed view of individual recipes with ingredients checklist
 - **Add Recipe**: Form to submit new recipes to the collection
+- **Cooking Tips (MongoDB)**: Add/edit/delete per-recipe tips stored in MongoDB (shown on each recipe page)
 - **About Page**: Information about the application and its features
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 
@@ -90,7 +91,7 @@ recipe-app/
 │   │   └── footer.ejs     # Page footer
 │   ├── index.ejs          # Home page
 │   ├── recipes.ejs        # All recipes page
-│   ├── recipe-detail.ejs  # Single recipe view
+│   ├── recipe-detail.ejs  # Single recipe view (includes per-recipe Mongo tips)
 │   ├── add-recipe.ejs     # Add recipe form
 │   ├── about.ejs          # About page
 │   └── 404.ejs           # Error page
@@ -149,6 +150,16 @@ The file `reset-recipes.sql` will:
    ```
    (Replace `root` with your MySQL username if different.)
 3. This will reset your database and load sample recipes.
+
+### MongoDB (NoSQL) Cooking Tips
+MongoDB is used to store per-recipe cooking tips that display on each recipe detail page.
+
+1. Ensure a MongoDB instance is running and set `MONGO_URI` (and optional `MONGO_DB`) in your `.env`.
+2. Seed sample data (per-recipe tips):
+   ```sh
+   npm run seed:mongo
+   ```
+3. Visit any recipe detail page (e.g., `/recipes/1`) to view/add/edit/delete cooking tips linked to that recipe.
 
 #### Viewing Data in MySQL Workbench
 1. Connect to your MySQL server.
