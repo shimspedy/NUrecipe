@@ -5,7 +5,7 @@ USE recipe_app;
 
 DROP TABLE IF EXISTS recipes;
 CREATE TABLE recipes (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description TEXT,
   category VARCHAR(50),

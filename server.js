@@ -1,4 +1,3 @@
-const fs = require('fs');
 const db = require('./config/db');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -34,6 +33,26 @@ function getAllRecipes(callback) {
   });
 }
 
+// Helper to get a single recipe
+function getRecipeById(id, callback) {
+  db.query('SELECT * FROM recipes WHERE id = ?', [id], (err, results) => {
+    if (err) return callback(err);
+    if (!results.length) return callback(null, null);
+
+    const recipe = results[0];
+    recipe.ingredients = recipe.ingredients ? JSON.parse(recipe.ingredients) : [];
+    callback(null, recipe);
+  });
+}
+
+// Normalize textarea input into an ingredients array
+function parseIngredients(ingredientsInput = '') {
+  return ingredientsInput
+    .split('\n')
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
 // Routes
 
 // Home page - shows featured recipes
@@ -65,15 +84,14 @@ app.get('/recipes', (req, res) => {
 // Single recipe detail page
 app.get('/recipes/:id', (req, res) => {
   const recipeId = parseInt(req.params.id);
-  db.query('SELECT * FROM recipes WHERE id = ?', [recipeId], (err, results) => {
+  getRecipeById(recipeId, (err, recipe) => {
     if (err) {
       return res.status(500).send('Database error');
     }
-    if (!results.length) {
+    if (!recipe) {
       return res.status(404).render('404', { title: 'Recipe Not Found' });
     }
-    const recipe = results[0];
-    recipe.ingredients = recipe.ingredients ? JSON.parse(recipe.ingredients) : [];
+
     res.render('recipe-detail', {
       title: recipe.title,
       recipe
@@ -90,12 +108,12 @@ app.get('/add-recipe', (req, res) => {
 
 // Handle form submission for new recipe
 app.post('/recipes', (req, res) => {
-  const ingredientsArr = req.body.ingredients.split('\n').filter(i => i.trim() !== '');
+  const ingredientsArr = parseIngredients(req.body.ingredients);
   const newRecipe = {
     title: req.body.title,
     description: req.body.description,
     ingredients: JSON.stringify(ingredientsArr),
-    instructions: req.body.instructions,
+    instructions: (req.body.instructions || '').trim(),
     cookTime: req.body.cookTime,
     servings: parseInt(req.body.servings),
     difficulty: req.body.difficulty,
@@ -105,6 +123,68 @@ app.post('/recipes', (req, res) => {
     if (err) {
       console.error('Error saving to MySQL:', err);
       return res.status(500).send('Database error');
+    }
+    res.redirect('/recipes');
+  });
+});
+
+// Edit recipe page
+app.get('/recipes/:id/edit', (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  getRecipeById(recipeId, (err, recipe) => {
+    if (err) {
+      return res.status(500).send('Database error');
+    }
+    if (!recipe) {
+      return res.status(404).render('404', { title: 'Recipe Not Found' });
+    }
+
+    res.render('edit-recipe', {
+      title: `Edit ${recipe.title}`,
+      recipe,
+      ingredientsText: (recipe.ingredients || []).join('\n')
+    });
+  });
+});
+
+// Handle recipe update
+app.put('/recipes/:id', (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  const ingredientsArr = parseIngredients(req.body.ingredients);
+
+  const updatedRecipe = {
+    title: req.body.title,
+    description: req.body.description,
+    ingredients: JSON.stringify(ingredientsArr),
+    instructions: (req.body.instructions || '').trim(),
+    cookTime: req.body.cookTime,
+    servings: parseInt(req.body.servings),
+    difficulty: req.body.difficulty,
+    category: req.body.category
+  };
+
+  db.query('UPDATE recipes SET ? WHERE id = ?', [updatedRecipe, recipeId], (err, result) => {
+    if (err) {
+      console.error('Error updating recipe:', err);
+      return res.status(500).send('Database error');
+    }
+    if (!result.affectedRows) {
+      return res.status(404).render('404', { title: 'Recipe Not Found' });
+    }
+    res.redirect(`/recipes/${recipeId}`);
+  });
+});
+
+// Delete a recipe
+app.delete('/recipes/:id', (req, res) => {
+  const recipeId = parseInt(req.params.id);
+  db.query('DELETE FROM recipes WHERE id = ?', [recipeId], (err, result) => {
+    if (err) {
+      console.error('Error deleting recipe:', err);
+      return res.status(500).send('Database error');
+    }
+    if (!result.affectedRows) {
+      return res.status(404).render('404', { title: 'Recipe Not Found' });
     }
     res.redirect('/recipes');
   });

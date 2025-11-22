@@ -1,13 +1,13 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <h1>Add New Recipe</h1>
-        <p class="lead">Share your delicious recipe with the community!</p>
+        <h1>Edit Recipe</h1>
+        <p class="lead">Update ingredients, instructions, or details for this recipe.</p>
 
-        <form action="/recipes" method="POST" class="needs-validation" novalidate>
+        <form action="/recipes/<%= recipe.id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="title" class="form-label">Recipe Title *</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
+                    <input type="text" class="form-control" id="title" name="title" value="<%= recipe.title %>" required>
                     <div class="invalid-feedback">
                         Please provide a recipe title.
                     </div>
@@ -16,15 +16,15 @@
                     <label for="category" class="form-label">Category *</label>
                     <select class="form-select" id="category" name="category" required>
                         <option value="">Choose category...</option>
-                        <option value="Appetizer">Appetizer</option>
-                        <option value="Main Course">Main Course</option>
-                        <option value="Dessert">Dessert</option>
-                        <option value="Italian">Italian</option>
-                        <option value="Asian">Asian</option>
-                        <option value="Mexican">Mexican</option>
-                        <option value="American">American</option>
-                        <option value="Vegetarian">Vegetarian</option>
-                        <option value="Vegan">Vegan</option>
+                        <option value="Appetizer" <%= recipe.category === 'Appetizer' ? 'selected' : '' %>>Appetizer</option>
+                        <option value="Main Course" <%= recipe.category === 'Main Course' ? 'selected' : '' %>>Main Course</option>
+                        <option value="Dessert" <%= recipe.category === 'Dessert' ? 'selected' : '' %>>Dessert</option>
+                        <option value="Italian" <%= recipe.category === 'Italian' ? 'selected' : '' %>>Italian</option>
+                        <option value="Asian" <%= recipe.category === 'Asian' ? 'selected' : '' %>>Asian</option>
+                        <option value="Mexican" <%= recipe.category === 'Mexican' ? 'selected' : '' %>>Mexican</option>
+                        <option value="American" <%= recipe.category === 'American' ? 'selected' : '' %>>American</option>
+                        <option value="Vegetarian" <%= recipe.category === 'Vegetarian' ? 'selected' : '' %>>Vegetarian</option>
+                        <option value="Vegan" <%= recipe.category === 'Vegan' ? 'selected' : '' %>>Vegan</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select a category.
@@ -34,8 +34,7 @@
 
             <div class="mb-3">
                 <label for="description" class="form-label">Description *</label>
-                <textarea class="form-control" id="description" name="description" rows="3" 
-                          placeholder="Brief description of your recipe..." required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="3" required><%= recipe.description %></textarea>
                 <div class="invalid-feedback">
                     Please provide a recipe description.
                 </div>
@@ -44,16 +43,15 @@
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label for="cookTime" class="form-label">Cook Time *</label>
-                    <input type="text" class="form-control" id="cookTime" name="cookTime" 
-                           placeholder="e.g., 30 minutes" required>
+                    <input type="text" class="form-control" id="cookTime" name="cookTime" value="<%= recipe.cookTime %>" required>
                     <div class="invalid-feedback">
                         Please provide cook time.
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="servings" class="form-label">Servings *</label>
-                    <input type="number" class="form-control" id="servings" name="servings" 
-                           min="1" max="50" required>
+                    <input type="number" class="form-control" id="servings" name="servings"
+                           min="1" max="50" value="<%= recipe.servings %>" required>
                     <div class="invalid-feedback">
                         Please provide number of servings.
                     </div>
@@ -62,9 +60,9 @@
                     <label for="difficulty" class="form-label">Difficulty *</label>
                     <select class="form-select" id="difficulty" name="difficulty" required>
                         <option value="">Choose difficulty...</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
+                        <option value="Easy" <%= recipe.difficulty === 'Easy' ? 'selected' : '' %>>Easy</option>
+                        <option value="Medium" <%= recipe.difficulty === 'Medium' ? 'selected' : '' %>>Medium</option>
+                        <option value="Hard" <%= recipe.difficulty === 'Hard' ? 'selected' : '' %>>Hard</option>
                     </select>
                     <div class="invalid-feedback">
                         Please select difficulty level.
@@ -74,9 +72,8 @@
 
             <div class="mb-3">
                 <label for="ingredients" class="form-label">Ingredients *</label>
-                <textarea class="form-control" id="ingredients" name="ingredients" rows="6" 
-                          placeholder="Enter each ingredient on a new line, e.g.:&#10;2 cups flour&#10;1 tsp salt&#10;3 eggs" required></textarea>
-                <div class="form-text">Enter each ingredient on a separate line</div>
+                <textarea class="form-control" id="ingredients" name="ingredients" rows="6" required><%= ingredientsText %></textarea>
+                <div class="form-text">Enter each ingredient on a separate line.</div>
                 <div class="invalid-feedback">
                     Please provide ingredients list.
                 </div>
@@ -84,16 +81,15 @@
 
             <div class="mb-3">
                 <label for="instructions" class="form-label">Instructions *</label>
-                <textarea class="form-control" id="instructions" name="instructions" rows="8" 
-                          placeholder="Provide step-by-step cooking instructions..." required></textarea>
+                <textarea class="form-control" id="instructions" name="instructions" rows="8" required><%= recipe.instructions %></textarea>
                 <div class="invalid-feedback">
                     Please provide cooking instructions.
                 </div>
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a href="/recipes" class="btn btn-secondary me-md-2">Cancel</a>
-                <button type="submit" class="btn btn-success">Add Recipe</button>
+                <a href="/recipes/<%= recipe.id %>" class="btn btn-secondary me-md-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
     </div>
@@ -105,7 +101,7 @@
     'use strict';
     window.addEventListener('load', function() {
         var forms = document.getElementsByClassName('needs-validation');
-        var validation = Array.prototype.filter.call(forms, function(form) {
+        Array.prototype.filter.call(forms, function(form) {
             form.addEventListener('submit', function(event) {
                 if (form.checkValidity() === false) {
                     event.preventDefault();
