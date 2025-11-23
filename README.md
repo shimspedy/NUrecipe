@@ -211,3 +211,18 @@ Worked on the MySQL database setup during the early stages of the project, inclu
 Prepared mock recipe data, helped test recipe rendering in the EJS templates, verified that both MySQL recipe data and MongoDB cooking tips displayed correctly, and assisted with user interface consistency checks.
 
 # NUrecipe
+
+
+#Mock Dataset 1
+
+INSERT INTO recipes (title, description, category, difficulty, cookTime, servings, ingredients, instructions)
+VALUES (
+  'Spaghetti',
+  'Classic Italian pasta dish.',
+  'Dinner',
+  'Easy',
+  '30 minutes',
+  4,
+  '["pasta", "tomato sauce", "salt", "olive oil"]',
+  'Boil pasta. Heat sauce. Combine.'
+);
