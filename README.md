@@ -194,4 +194,20 @@ This project is licensed under the MIT License.
 - Recipe import from URLs
 - Nutritional information
 - Shopping list generation
-- Recipe scaling (adjust servings)# NUrecipe
+- Recipe scaling (adjust servings)
+
+## Team Responsibilities
+
+**Nate**
+Created the NoSQL cooking-tips feature, integrated MongoDB into the recipe detail page, and handled the EJS display logic. Helped test the NoSQL routes, updated project documentation, and organized the project structure.
+
+**Hashim**
+Served as the project manager. Implemented the MySQL CRUD routes and added the MongoDB CRUD functionality on top of the existing NoSQL feature. Merged the team’s code into the final server.js, coordinated task assignments, maintained the repository, and ensured the project met all requirements.
+
+**Anthony**
+Worked on the MySQL database setup during the early stages of the project, including schema creation, sample data inserts, initial SQL testing, and connectivity checks. Assisted with the SQL portion during the first phase of development.
+
+**Gilbert**
+Prepared mock recipe data, helped test recipe rendering in the EJS templates, verified that both MySQL recipe data and MongoDB cooking tips displayed correctly, and assisted with user interface consistency checks.
+
+# NUrecipe
