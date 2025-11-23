@@ -4,25 +4,28 @@ To quickly test your MySQL connection, use the provided script:
 
 ```js
 // config/test-db-connection.js
-const pool = require('./db');
+const pool = require("./db");
 
 pool.getConnection((err, connection) => {
-   if (err) {
-      console.error('MySQL connection failed:', err.message);
-      process.exit(1);
-   } else {
-      console.log('MySQL connection successful!');
-      connection.release();
-      process.exit(0);
-   }
+  if (err) {
+    console.error("MySQL connection failed:", err.message);
+    process.exit(1);
+  } else {
+    console.log("MySQL connection successful!");
+    connection.release();
+    process.exit(0);
+  }
 });
 ```
 
 Run it with:
+
 ```sh
 node config/test-db-connection.js
 ```
+
 If you see "MySQL connection successful!", your database credentials are correct and the server is reachable.
+
 # Recipe App
 
 A full-featured recipe sharing application built with Express.js, EJS templating, and Bootstrap for styling.
@@ -56,20 +59,25 @@ A full-featured recipe sharing application built with Express.js, EJS templating
 
 1. Clone or download this project
 2. Navigate to the project directory:
+
    ```bash
    cd recipe-app
    ```
 
 3. Install dependencies:
+
    ```bash
    npm install
    ```
 
 4. Start the development server:
+
    ```bash
    npm run dev
    ```
+
    Or for production:
+
    ```bash
    npm start
    ```
@@ -103,12 +111,14 @@ recipe-app/
 ## Features in Detail
 
 ### Recipe Management
+
 - Add new recipes with ingredients, instructions, and metadata
 - View recipes with formatted ingredients and step-by-step instructions
 - Search recipes by title or description
 - Filter by category and difficulty level
 
 ### User Experience
+
 - Responsive design that works on all devices
 - Interactive ingredients checklist
 - Print-friendly recipe pages
@@ -116,6 +126,7 @@ recipe-app/
 - Form validation for recipe submission
 
 ### Technical Features
+
 - RESTful routing structure
 - Template inheritance with EJS partials
 - Client-side search and filtering
@@ -125,24 +136,28 @@ recipe-app/
 ## Customization
 
 ### Adding New Categories
+
 Edit the category options in `views/add-recipe.ejs` and update the filter in `views/recipes.ejs`.
 
 ### Styling
+
 Modify `public/css/style.css` to customize the appearance. The app uses Bootstrap 5 as the base framework.
 
-
 ### MySQL Database Integration
+
 This project supports MySQL for persistent recipe storage.
 
 #### Resetting and Populating the Database
 
 The file `reset-recipes.sql` will:
+
 - Drop the `recipe_app` database if it exists
 - Recreate the database
 - Create the `recipes` table
 - Insert sample recipe data
 
 **Usage:**
+
 1. Make sure MySQL is installed and running.
 2. In your project directory, run:
    ```sh
@@ -152,6 +167,7 @@ The file `reset-recipes.sql` will:
 3. This will reset your database and load sample recipes.
 
 ### MongoDB (NoSQL) Cooking Tips
+
 MongoDB is used to store per-recipe cooking tips that display on each recipe detail page.
 
 1. Ensure a MongoDB instance is running and set `MONGO_URI` (and optional `MONGO_DB`) in your `.env`.
@@ -162,6 +178,7 @@ MongoDB is used to store per-recipe cooking tips that display on each recipe det
 3. Visit any recipe detail page (e.g., `/recipes/1`) to view/add/edit/delete cooking tips linked to that recipe.
 
 #### Viewing Data in MySQL Workbench
+
 1. Connect to your MySQL server.
 2. Expand the `recipe_app` database and the `recipes` table.
 3. Right-click the table and select "Select Rows - Limit 1000" to view all recipes.
@@ -212,17 +229,16 @@ Prepared mock recipe data, helped test recipe rendering in the EJS templates, ve
 
 # NUrecipe
 
-
-#Mock Dataset 1
+**Mock Dataset 1**
 
 INSERT INTO recipes (title, description, category, difficulty, cookTime, servings, ingredients, instructions)
 VALUES (
-  'Spaghetti',
-  'Classic Italian pasta dish.',
-  'Dinner',
-  'Easy',
-  '30 minutes',
-  4,
-  '["pasta", "tomato sauce", "salt", "olive oil"]',
-  'Boil pasta. Heat sauce. Combine.'
+'Spaghetti',
+'Classic Italian pasta dish.',
+'Dinner',
+'Easy',
+'30 minutes',
+4,
+'["pasta", "tomato sauce", "salt", "olive oil"]',
+'Boil pasta. Heat sauce. Combine.'
 );
